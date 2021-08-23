@@ -19,7 +19,8 @@ def scrape_all():
         "news_paragraph": news_paragraph,
         "featured_image": featured_image(browser),
         "facts": mars_facts(),
-        "last_modified": dt.datetime.now()
+        "last_modified": dt.datetime.now(),
+        "hemispheres": hemispheres(browser)
     }
 
     # Stop webdriver and return data
@@ -101,3 +102,40 @@ if __name__ == "__main__":
 
     # If running as script, print scraped data
     print(scrape_all())
+
+def hemispheres(browser):
+    # Visit URL
+    url = 'https://data-class-jpl-space.s3.amazonaws.com/JPL_Space/index.html'
+    browser.visit(url)
+    #copy the code from my deliverable 1
+    # 2. Create a list to hold the images and titles.
+    hemisphere_image_urls = []
+    # images = img_soup.find('img', class_='fancybox-image')
+    # 3. Write code to retrieve the image urls and titles for each hemisphere.
+    for x in range(4):
+        hemispheres={}
+    #     full_image_elem = browser.find_by_tag('h3')
+    #     full_image_elem.click()
+    #     html = browser.html
+    #     img_soup = soup(html, 'html.parser')
+    #     img_url_rel = img_soup.find('img', class_='a').get('src')
+    #     img_url = f'https://marshemispheres.com/{img_url_rel}'
+    #     slide_elem = img_soup.select_one('div.list_text')
+    #     title = slide_elem.find('div', class_='content_title').get_text()
+    #     h3 = images.find('h3').click()
+    #     link = h3.find('a')
+    #     lists wont save for some reason, need to find an alternative.
+        browser.find_by_css('h3')[x].click()
+        #found a bunch of useful variations of the find by commands on 
+        #link below, had an idea to search for it after seeing the various find_by commands above
+        #https://splinter.readthedocs.io/en/latest/finding.html
+        full_image_elem = browser.find_link_by_partial_text('Sample')
+        img_url = full_image_elem['href']
+        title = browser.find_by_css('h2').text
+        #Find by CSS command prints:splinter.element_list.ElementList at 0x297c2ff61c0 will search for more splinter commands to fix
+        #Found .text command at https://python.hotexamples.com/examples/splinter/Browser/find_by_css/python-browser-find_by_css-method-examples.html
+        hemispheres['Image URL'] = img_url
+        hemispheres['Title'] = title
+        hemisphere_image_urls.append(hemispheres)
+        browser.back()
+        return hemisphere_image_urls
